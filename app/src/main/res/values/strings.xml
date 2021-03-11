@@ -3,4 +3,8 @@
 
     <string name="api_key">AIzaSyCbiRLtHqYnVf3gv58Fj22YIVi2SH3A_uY</string>
 
+    <string name="show_restaurants">Restaurants</string>
+    <string name="show_bars">Bars</string>
+    <string name="show_cafes">Cafes</string>
+
 </resources>
