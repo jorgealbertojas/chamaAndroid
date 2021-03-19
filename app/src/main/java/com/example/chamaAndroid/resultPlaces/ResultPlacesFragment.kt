@@ -1,55 +1,57 @@
 package com.example.chamaAndroid.resultPlaces
 
-    import android.os.Bundle
-    import android.view.*
-    import androidx.fragment.app.Fragment
-    import androidx.lifecycle.Observer
-    import androidx.lifecycle.ViewModelProvider
-    import androidx.navigation.fragment.findNavController
-    import com.example.chamaAndroid.R
-    import com.example.chamaAndroid.databinding.FragmentPlacesBinding
-    import com.example.chamaAndroid.network.PlacesApiFilter
+import android.os.Bundle
+import android.view.*
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.chamaAndroid.R
+import com.example.chamaAndroid.databinding.FragmentPlacesBinding
+import com.example.chamaAndroid.network.PlacesApiFilter
 
-/**
-     * This fragment shows the the status of the Mars real-estate web services transaction.
-     */
-    class ResultPlacesFragment : Fragment() {
+class ResultPlacesFragment : Fragment() {
 
-        /**
-         * Lazily initialize our [ResultPlacesViewModel].
-         */
-        private val viewModel: ResultPlacesViewModel by lazy {
-            ViewModelProvider(this).get(ResultPlacesViewModel::class.java)
-        }
+    private val viewModel: ResultPlacesViewModel by lazy {
 
-        /**
-         * Inflates the layout with Data Binding, sets its lifecycle owner to the OverviewFragment
-         * to enable Data Binding to observe LiveData, and sets up the RecyclerView with an adapter.
-         */
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                                  savedInstanceState: Bundle?): View? {
-            val binding = FragmentPlacesBinding.inflate(inflater)
+        val args = ResultPlacesFragmentArgs.fromBundle(requireArguments())
 
-            // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
-            binding.lifecycleOwner = this
+        val application = requireNotNull(activity).application
 
-            // Giving the binding access to the OverviewViewModel
-            binding.viewModel = viewModel
+        val bundle = bundleOf(
+            getString(R.string.key_query) to PlacesApiFilter.SHOW_BARS.value + "+rating",
+            getString(R.string.key_locations) to "circle:" + args.circle + "@" + args.latitude + args.longitude,
+            getString(R.string.key_key) to getString(R.string.api_key)
+        )
 
-            // Sets the adapter of the photosGrid RecyclerView with clickHandler lambda that
-            // tells the viewModel when our property is clicked
-            binding.photosGrid.adapter = ResultPlacesAdapter(ResultPlacesAdapter.OnClickListener {
+
+        val viewModelFactory = ResultPlacesModelFactory(bundle, application)
+        ViewModelProvider(
+            this, viewModelFactory
+        ).get(ResultPlacesViewModel::class.java)
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val binding = FragmentPlacesBinding.inflate(inflater)
+
+        binding.lifecycleOwner = this
+
+        binding.viewModel = viewModel
+
+        binding.photosGrid.adapter = ResultPlacesAdapter(ResultPlacesAdapter.OnClickListener {
                 viewModel.displayPropertyDetails(it)
             })
 
-            // Observe the navigateToSelectedProperty LiveData and Navigate when it isn't null
-            // After navigating, call displayPropertyDetailsComplete() so that the ViewModel is ready
-            // for another navigation event.
+
             viewModel.navigateToSelectedProperty.observe(this, Observer {
                 if ( null != it ) {
-                    // Must find the NavController from the Fragment
-                   // this.findNavController().navigate(ResultPlacesFragmentDirections.actionShowDetail(it))
-                    // Tell the ViewModel we've made the navigate call to prevent multiple navigation
+                    this.findNavController().navigate(
+                        ResultPlacesFragmentDirections.actionResultPlacesFragmentToDetailFragment(it)
+                    )
                     viewModel.displayPropertyDetailsComplete()
                 }
             })
@@ -58,27 +60,37 @@ package com.example.chamaAndroid.resultPlaces
             return binding.root
         }
 
-        /**
-         * Inflates the result places menu that contains filtering options.
-         */
         override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
             inflater.inflate(R.menu.result_places_menu, menu)
             super.onCreateOptionsMenu(menu, inflater)
         }
 
-        /**
-         * Updates the filter in the [ResultPlacesViewModel] when the menu items are selected from the
-         * overflow menu.
-         */
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
-            viewModel.updateFilter(
-                when (item.itemId) {
-                    R.id.show_restaurants_menu -> PlacesApiFilter.SHOW_RESTAURANTS
-                    R.id.show_cafes_menu -> PlacesApiFilter.SHOW_CAFES
-                    else -> PlacesApiFilter.SHOW_BARS
-                }
-            )
+            val args = ResultPlacesFragmentArgs.fromBundle(requireArguments())
+
+            when (item.itemId) {
+                R.id.show_restaurants_menu ->
+                    viewModel.updateFilter(
+                        PlacesApiFilter.SHOW_RESTAURANTS.value + "+rating",
+                        "circle:" + args.circle + "@" + args.latitude + args.longitude,
+                        getString(R.string.api_key)
+                    )
+                R.id.show_cafes_menu -> viewModel.updateFilter(
+                    PlacesApiFilter.SHOW_CAFES.value + "+rating",
+                    "circle:" + args.circle + "@" + args.latitude + args.longitude,
+                    getString(R.string.api_key)
+                )
+                R.id.show_bars_menu -> viewModel.updateFilter(
+                    PlacesApiFilter.SHOW_BARS.value + "+rating",
+                    "circle:" + args.circle + "@" + args.latitude + args.longitude,
+                    getString(R.string.api_key)
+                )
+
+                else -> return false
+            }
+
             return true
         }
-    }
+
+}
 
