@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 
 class SearchFragment : Fragment() {
 
-    private var TAG = "MainActivity"
+    private var TAG = "SearchFragment"
     private var placesClient: PlacesClient? = null
 
     var autocompleteFragment: AutocompleteSupportFragment? = null
@@ -63,14 +63,6 @@ class SearchFragment : Fragment() {
                         "Place: ${place.name}, ${place.id} , ${place.latLng?.latitude.toString()} , ${place.latLng?.longitude.toString()} "
                     )
 
-                    autocompleteFragment =
-                        requireActivity().supportFragmentManager.findFragmentById(R.id.place_autocomplete_fragment)
-                                as AutocompleteSupportFragment
-
-                    autocompleteFragment?.let {
-                        it.requireView()!!.visibility = View.GONE
-                    }
-
                     binding.root?.findNavController()?.navigate(
                         SearchFragmentDirections.actionSearchFragmentToResultPlacesFragment(
                             place.latLng?.latitude.toString(),
@@ -98,9 +90,9 @@ class SearchFragment : Fragment() {
         super.onResume()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.overflow_menu, menu)
+    override fun onStop() {
+        autocompleteFragment?.requireView()!!.visibility = View.GONE
+        super.onStop()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

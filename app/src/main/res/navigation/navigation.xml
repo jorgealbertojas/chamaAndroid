@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_searchFragment_to_resultPlacesFragment"
             app:destination="@id/resultPlacesFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_aboutFragment"
+            app:destination="@id/aboutFragment" />
     </fragment>
     <fragment
         android:id="@+id/resultPlacesFragment"
@@ -51,6 +54,14 @@
         <action
             android:id="@+id/action_detailFragment_to_resultPlacesFragment"
             app:destination="@id/resultPlacesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.example.chamaAndroid.about.AboutFragment"
+        android:label="AboutFragment" >
+        <action
+            android:id="@+id/action_aboutFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
 
 </navigation>

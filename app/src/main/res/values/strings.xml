@@ -7,8 +7,7 @@
     <string name="show_bars">Bars</string>
     <string name="show_cafes">Cafes</string>
 
-    <string name="menu_history">History</string>
-    <string name="menu_favorite">Favorite</string>
+    <string name="menu_about">About</string>
 
     <string name="label_search">Search</string>
     <string name="label_result">Result</string>
@@ -17,7 +16,7 @@
     <string name="key_locations">KEY_LOCATIONS</string>
     <string name="key_query">KEY_QUERY</string>
 
-    <string name="string_key">Enter number for km circle</string>
+    <string name="string_number">Enter number for km circle</string>
 
     <string name="string_0free">Free</string>
     <string name="string_1inexpensive">Inexpensive</string>
@@ -26,7 +25,6 @@
     <string name="string_4very_expensive">Very Expensive</string>
     <string name="string_not_information">Not information</string>
 
-
-
+    <string name="string_about">Test for Chama</string>
 
 </resources>

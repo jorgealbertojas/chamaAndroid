@@ -2,11 +2,8 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/favoriteFragment"
-        android:icon="@drawable/ic_launcher_background"
-        android:title="@string/menu_favorite" />
-    <item
-        android:id="@+id/historyFragment"
-        android:icon="@drawable/ic_launcher_background"
-        android:title="@string/menu_history" />
+        android:id="@+id/aboutFragment"
+        android:icon="@mipmap/ic_icon"
+        android:title="@string/menu_about" />
+
 </menu>
